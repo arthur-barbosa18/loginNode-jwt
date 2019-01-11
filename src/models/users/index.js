@@ -1,7 +1,6 @@
-const config = require("../../config.json");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
-const db = require("../../config/database");
+const db = require("../../databases");
 const User = db.User;
 
 module.exports = {
@@ -18,7 +17,7 @@ async function authenticate({ username, password }) {
     // verifica se passou usuario e senha corretos no login
     if (user && bcrypt.compareSync(password, user.hash)) {
         const { hash, ...userWithoutHash } = user.toObject();
-        const token = jwt.sign({ sub: user.id }, config.secret, {
+        const token = jwt.sign({ sub: user.id }, process.env.SECRET, {
             expiresIn: 300 // expires in 5min
         });
         return {

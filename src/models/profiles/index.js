@@ -1,5 +1,4 @@
-const config = require("../../config.json");
-const db = require("../../config/database");
+const db = require("../../databases");
 const Profile = db.Profile;
 
 module.exports = {

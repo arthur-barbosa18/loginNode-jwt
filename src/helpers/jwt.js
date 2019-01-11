@@ -1,11 +1,9 @@
 const expressJwt = require('express-jwt');
-const config = require('../config.json');
 const userService = require('../models/users');
-
-module.exports = jwt;
+require('dotenv').load();
 
 function jwt() {
-    const secret = config.secret;
+    const secret = process.env.SECRET;
     return expressJwt({ secret, isRevoked }).unless({
         path: [
             // public routes that don't require authentication
@@ -25,3 +23,5 @@ async function isRevoked(req, payload, done) {
 
     done();
 };
+
+module.exports = jwt;

@@ -1,6 +1,6 @@
-const config = require('../config.json');
+require('dotenv').load();
 const mongoose = require('mongoose');
-mongoose.connect(process.env.MONGODB_URI || config.connectionString,  { useNewUrlParser: true, useCreateIndex: true });
+mongoose.connect(process.env.MONGODB_URI || process.env.connectionString,  { useNewUrlParser: true, useCreateIndex: true });
 mongoose.Promise = global.Promise;
 
 module.exports = {
