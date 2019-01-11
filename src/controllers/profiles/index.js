@@ -1,4 +1,4 @@
-const profileService = require('../models/profiles');
+const profileService = require('../../models/profiles');
 module.exports = {
     register,
     getAll,

@@ -5,7 +5,6 @@ const User = db.User;
 
 module.exports = {
     authenticate,
-    getAll,
     getById,
     create,
     update,
@@ -20,6 +19,8 @@ async function authenticate({ username, password }) {
         const token = jwt.sign({ sub: user.id }, process.env.SECRET, {
             expiresIn: 300 // expires in 5min
         });
+        user.token = token;
+        user.save();
         return {
             ...userWithoutHash,
             token
@@ -27,11 +28,10 @@ async function authenticate({ username, password }) {
     }
 }
 
-async function getAll() {
-    return await User.find().select("-hash");
-}
-
 async function getById(id) {
+    // validate
+    const user = await User.findById(id);
+    if (!user || user.deletion_logic == true) throw "User not found";
     return await User.findById(id).select("-hash");
 }
 
@@ -58,7 +58,7 @@ async function update(id, userParam) {
     const user = await User.findById(id);
 
     // validate
-    if (!user) throw "User not found";
+    if (!user || user.deletion_logic == true) throw "User not found";
     if (
         user.username !== userParam.username &&
         (await User.findOne({ username: userParam.username }))
@@ -78,5 +78,9 @@ async function update(id, userParam) {
 }
 
 async function _delete(id) {
-    await User.findByIdAndRemove(id);
+    const user = await User.findById(id);
+    user.deletion_logic = true;
+    user.deleted_at = Date.now();
+    await user.save()
+    //await User.findByIdAndRemove(id);
 }

@@ -11,13 +11,13 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cors());
 
-// use JWT auth to secure the api
-app.use('/profiles', require('./routes/profiles_routes'));
+// routes profile are public
+app.use('/profiles', require('./routes/profile'));
 
-// api routes
+// use JWT auth to secure the api
 app.use(jwt());
 
-app.use('/users', require('./routes/'));
+app.use('/users', require('./routes/user'));
 
 // global error handler
 app.use(errorHandler);

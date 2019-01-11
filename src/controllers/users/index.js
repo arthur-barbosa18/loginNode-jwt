@@ -1,12 +1,11 @@
-const userService = require('../models/users');
+const userService = require('../../models/users');
 module.exports = {
     authenticate,
     register,
-    getAll,
     getCurrent,
     getById,
     update,
-    delete: _delete
+    _delete
 };
 
 function authenticate(req, res, next) {
@@ -18,12 +17,6 @@ function authenticate(req, res, next) {
 function register(req, res, next) {
     userService.create(req.body)
         .then(() => res.json({}))
-        .catch(err => next(err));
-}
-
-function getAll(req, res, next) {
-    userService.getAll()
-        .then(users => res.json(users))
         .catch(err => next(err));
 }
 
@@ -46,6 +39,8 @@ function update(req, res, next) {
 }
 
 function _delete(req, res, next) {
+    console.log("OIOIOIO")
+    console.log(req.params.id)
     userService.delete(req.params.id)
         .then(() => res.json({}))
         .catch(err => next(err));
