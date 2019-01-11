@@ -1,15 +1,18 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const db = require("../../databases");
+randtoken = require('rand-token');
 const User = db.User;
 
 module.exports = {
+    reauthenticate,
     authenticate,
     getById,
     create,
     update,
     delete: _delete
 };
+
 
 async function authenticate({ username, password }) {
     const user = await User.findOne({ username });
@@ -19,14 +22,36 @@ async function authenticate({ username, password }) {
         const token = jwt.sign({ sub: user.id }, process.env.SECRET, {
             expiresIn: 300 // expires in 5min
         });
-        user.token = token;
+        const refreshToken = randtoken.uid(100);
+        user.refresh_token = refreshToken;
         user.save();
         return {
             ...userWithoutHash,
-            token
+            token,
+            refreshToken
         };
     }
 }
+
+async function reauthenticate({ id, renew_token }) {
+    const user = await User.findById(id);
+    // verifica se passou usuario e senha corretos no login
+    if(user.refresh_token == renew_token) {
+        const token = jwt.sign({ sub: user.id }, process.env.SECRET, {
+            expiresIn: 300 // expires in 5min
+        });
+        const { hash, ...userWithoutHash } = user.toObject();
+        const refreshToken = randtoken.uid(100);
+        user.refresh_token = refreshToken;
+        return {
+            userWithoutHash,
+            token,
+            refreshToken
+        };
+    }
+}
+
+
 
 async function getById(id) {
     // validate
@@ -52,6 +77,7 @@ async function create(userParam) {
 
     // save user_del
     await user.save();
+
 }
 
 async function update(id, userParam) {

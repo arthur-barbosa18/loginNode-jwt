@@ -7,6 +7,7 @@ function jwt() {
     return expressJwt({ secret, isRevoked }).unless({
         path: [
             // public routes that don't require authentication
+            '/users/reauthenticate',
             '/users/authenticate',
             '/users/register',
             '/profiles'
@@ -20,7 +21,6 @@ async function isRevoked(req, payload, done) {
     if (!user) {
         return done(null, true);
     }
-
     done();
 };
 

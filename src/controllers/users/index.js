@@ -1,5 +1,6 @@
 const userService = require('../../models/users');
 module.exports = {
+    reauthenticate,
     authenticate,
     register,
     getCurrent,
@@ -7,6 +8,12 @@ module.exports = {
     update,
     _delete
 };
+
+function reauthenticate(req, res, next) {
+    userService.reauthenticate(req.body)
+        .then(user => user ? res.json(user) : res.status(400).json({ message: 'Id or refresh token is incorrect' }))
+        .catch(err => next(err));
+}
 
 function authenticate(req, res, next) {
     userService.authenticate(req.body)
