@@ -4,6 +4,7 @@ module.exports = {
     authenticate,
     register,
     getCurrent,
+    getAll,
     getById,
     update,
     _delete
@@ -30,6 +31,12 @@ function register(req, res, next) {
 function getCurrent(req, res, next) {
     userService.getById(req.user.sub)
         .then(user => user ? res.json(user) : res.sendStatus(404))
+        .catch(err => next(err));
+}
+
+function getAll(req, res, next) {
+    userService.getAll()
+        .then(user => res.json(users))
         .catch(err => next(err));
 }
 

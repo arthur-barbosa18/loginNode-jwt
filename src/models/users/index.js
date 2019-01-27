@@ -7,6 +7,7 @@ const User = db.User;
 module.exports = {
     reauthenticate,
     authenticate,
+    getAll,
     getById,
     create,
     update,
@@ -51,7 +52,9 @@ async function reauthenticate({ id, renew_token }) {
     }
 }
 
-
+async function getAll() {
+    return await User.find();
+}
 
 async function getById(id) {
     // validate

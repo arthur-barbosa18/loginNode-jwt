@@ -6,6 +6,7 @@ router.post('/reauthenticate', controller_users.reauthenticate);
 router.post('/authenticate', controller_users.authenticate);
 router.post('/register', controller_users.register);
 router.get('/current', controller_users.getCurrent);
+router.get('/', controller_users.getAll);
 router.get('/:id', controller_users.getById);
 router.put('/:id', controller_users.update);
 router.delete('/:id', controller_users._delete);
